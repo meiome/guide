@@ -13,6 +13,7 @@
     --muted: #9aa3af;
     --accent: #7cc4ff;
     --ok: #5ed4a0;
+    --warn: #f5b955;
     --code-bg: #0b0d12;
   }
   @media (prefers-color-scheme: light) {
@@ -24,6 +25,7 @@
       --muted: #5b6470;
       --accent: #0969da;
       --ok: #1a7f4f;
+      --warn: #9a6700;
       --code-bg: #f3f4f6;
     }
   }
@@ -42,12 +44,21 @@
   }
   h1 { margin: 0 0 .25rem; font-size: 2rem; }
   h2 { margin-top: 2.5rem; font-size: 1.35rem; border-bottom: 1px solid var(--border); padding-bottom: .35rem; }
+  h3 { margin-top: 1.75rem; font-size: 1.1rem; }
   .sub { color: var(--muted); margin-top: 0; }
   code, pre, kbd {
     font-family: "SF Mono", Menlo, Consolas, monospace;
     font-size: .92em;
   }
   code { background: var(--code-bg); padding: .1em .35em; border-radius: 4px; }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: .75rem .9rem;
+    overflow-x: auto;
+  }
+  pre code { background: transparent; padding: 0; }
   table {
     width: 100%;
     border-collapse: collapse;
@@ -72,6 +83,31 @@
     padding: 1.25rem;
     margin-top: 1rem;
   }
+  .tabs {
+    display: flex;
+    gap: .25rem;
+    border-bottom: 1px solid var(--border);
+    margin: 1.5rem 0 0;
+  }
+  .tab {
+    background: transparent;
+    color: var(--muted);
+    border: none;
+    padding: .65rem 1.1rem;
+    font-weight: 600;
+    font-size: .95rem;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    font-family: inherit;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .pane { display: none; }
+  .pane.active { display: block; }
   label { display: block; font-weight: 600; margin-bottom: .4rem; }
   textarea {
     width: 100%;
@@ -95,15 +131,10 @@
   .output pre {
     flex: 1;
     margin: 0;
-    padding: .75rem .9rem;
-    background: var(--code-bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow-x: auto;
     white-space: pre-wrap;
     word-break: break-word;
   }
-  button {
+  button.btn {
     padding: .55rem 1rem;
     background: var(--accent);
     color: #fff;
@@ -113,10 +144,19 @@
     cursor: pointer;
     font-size: .95rem;
     white-space: nowrap;
+    font-family: inherit;
   }
-  button:hover { filter: brightness(1.1); }
-  button.copied { background: var(--ok); }
+  button.btn:hover { filter: brightness(1.1); }
+  button.btn.copied { background: var(--ok); }
   .note { color: var(--muted); font-size: .88rem; margin-top: .6rem; }
+  .warn {
+    color: var(--warn);
+    border-left: 3px solid var(--warn);
+    padding: .5rem .8rem;
+    background: color-mix(in srgb, var(--warn) 8%, transparent);
+    border-radius: 0 6px 6px 0;
+    margin: 1rem 0;
+  }
   footer { margin-top: 3rem; text-align: center; color: var(--muted); font-size: .85rem; }
 </style>
 </head>
@@ -125,67 +165,175 @@
   <h1>Guida comandi</h1>
   <p class="sub">Appunti personali — <a href="https://github.com/meiome" style="color:var(--accent)">@meiome</a></p>
 
-  <h2><code>git add</code> — differenze tra <code>-u</code>, <code>.</code> e <code>-A</code></h2>
-  <p>I tre flag sembrano equivalenti ma si comportano in modo diverso rispetto a <em>file modificati</em>, <em>nuovi</em> ed <em>eliminati</em>, e rispetto alla <em>cartella corrente</em>.</p>
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="git" role="tab">git</button>
+    <button class="tab" data-tab="docker" role="tab">docker</button>
+  </nav>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Comando</th>
-        <th>File modificati</th>
-        <th>File nuovi</th>
-        <th>File eliminati</th>
-        <th>Ambito</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><code>git add -u</code></td>
-        <td>Sì</td>
-        <td>No</td>
-        <td>Sì</td>
-        <td>Tutto il repo</td>
-      </tr>
-      <tr>
-        <td><code>git add .</code></td>
-        <td>Sì</td>
-        <td>Sì</td>
-        <td>Sì <span class="note">(da Git 2.0)</span></td>
-        <td>Solo dalla cartella corrente in giù</td>
-      </tr>
-      <tr>
-        <td><code>git add -A</code></td>
-        <td>Sì</td>
-        <td>Sì</td>
-        <td>Sì</td>
-        <td>Tutto il repo</td>
-      </tr>
-    </tbody>
-  </table>
+  <!-- ───────── GIT ───────── -->
+  <section id="git" class="pane active">
+    <h2><code>git add</code> — differenze tra <code>-u</code>, <code>.</code> e <code>-A</code></h2>
+    <p>I tre flag sembrano equivalenti ma si comportano in modo diverso rispetto a <em>file modificati</em>, <em>nuovi</em> ed <em>eliminati</em>, e rispetto alla <em>cartella corrente</em>.</p>
 
-  <p><strong>In pratica:</strong></p>
-  <ul>
-    <li><code>-u</code> (update): aggiorna solo i file già tracciati. Utile quando non vuoi aggiungere file nuovi.</li>
-    <li><code>.</code>: include tutto <em>a partire dalla cartella in cui ti trovi</em>. Se sei in una sottocartella, file modificati altrove restano fuori.</li>
-    <li><code>-A</code> (all): include tutto il repo. È l'opzione più "totale".</li>
-  </ul>
+    <table>
+      <thead>
+        <tr>
+          <th>Comando</th>
+          <th>File modificati</th>
+          <th>File nuovi</th>
+          <th>File eliminati</th>
+          <th>Ambito</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>git add -u</code></td>
+          <td>Sì</td><td>No</td><td>Sì</td>
+          <td>Tutto il repo</td>
+        </tr>
+        <tr>
+          <td><code>git add .</code></td>
+          <td>Sì</td><td>Sì</td><td>Sì <span class="note">(da Git 2.0)</span></td>
+          <td>Solo dalla cartella corrente in giù</td>
+        </tr>
+        <tr>
+          <td><code>git add -A</code></td>
+          <td>Sì</td><td>Sì</td><td>Sì</td>
+          <td>Tutto il repo</td>
+        </tr>
+      </tbody>
+    </table>
 
-  <h2>Generatore commit</h2>
-  <div class="card">
-    <label for="msg">Messaggio del commit</label>
-    <textarea id="msg" placeholder="es. fix: corretto calcolo totale carrello"></textarea>
+    <p><strong>In pratica:</strong></p>
+    <ul>
+      <li><code>-u</code> (update): aggiorna solo i file già tracciati. Utile quando non vuoi aggiungere file nuovi.</li>
+      <li><code>.</code>: include tutto <em>a partire dalla cartella in cui ti trovi</em>. Se sei in una sottocartella, file modificati altrove restano fuori.</li>
+      <li><code>-A</code> (all): include tutto il repo. È l'opzione più "totale".</li>
+    </ul>
 
-    <div class="output">
-      <pre id="out"><code>git add -A &amp;&amp; git commit -m ""</code></pre>
-      <button id="copy" type="button">Copia</button>
+    <h2>Generatore commit</h2>
+    <div class="card">
+      <label for="msg">Messaggio del commit</label>
+      <textarea id="msg" placeholder="es. fix: corretto calcolo totale carrello"></textarea>
+
+      <div class="output">
+        <pre id="out"><code>git add -A &amp;&amp; git commit -m ""</code></pre>
+        <button id="copy" class="btn" type="button">Copia</button>
+      </div>
+      <p class="note">I caratteri <code>"</code>, <code>`</code>, <code>$</code>, <code>\</code> vengono automaticamente escapati per funzionare in shell.</p>
     </div>
-    <p class="note">I caratteri <code>"</code>, <code>`</code>, <code>$</code>, <code>\</code> vengono automaticamente escapati per funzionare in shell.</p>
-  </div>
+  </section>
+
+  <!-- ───────── DOCKER ───────── -->
+  <section id="docker" class="pane">
+    <h2>Comandi principali</h2>
+
+    <h3>Container</h3>
+    <table>
+      <tbody>
+        <tr><td><code>docker ps</code></td><td>Container in esecuzione</td></tr>
+        <tr><td><code>docker ps -a</code></td><td>Tutti i container, anche fermi</td></tr>
+        <tr><td><code>docker start NOME</code></td><td>Avvia un container fermo</td></tr>
+        <tr><td><code>docker stop NOME</code></td><td>Ferma un container</td></tr>
+        <tr><td><code>docker restart NOME</code></td><td>Riavvia</td></tr>
+        <tr><td><code>docker rm NOME</code></td><td>Elimina un container (fermo)</td></tr>
+        <tr><td><code>docker rm -f NOME</code></td><td>Forza eliminazione (anche se in esecuzione)</td></tr>
+        <tr><td><code>docker exec -it NOME bash</code></td><td>Apre una shell dentro il container</td></tr>
+        <tr><td><code>docker logs NOME</code></td><td>Mostra i log</td></tr>
+        <tr><td><code>docker logs -f NOME</code></td><td>Segue i log in tempo reale</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Immagini</h3>
+    <table>
+      <tbody>
+        <tr><td><code>docker images</code></td><td>Elenca le immagini locali</td></tr>
+        <tr><td><code>docker pull IMMAGINE</code></td><td>Scarica un'immagine</td></tr>
+        <tr><td><code>docker rmi IMMAGINE</code></td><td>Elimina un'immagine</td></tr>
+        <tr><td><code>docker build -t NOME .</code></td><td>Costruisce un'immagine dal <code>Dockerfile</code> nella cartella corrente</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Run con flag più usate</h3>
+    <pre><code>docker run -d --name webapp -p 8080:80 -v $(pwd):/app nginx</code></pre>
+    <table>
+      <tbody>
+        <tr><td><code>-d</code></td><td>Detached (in background)</td></tr>
+        <tr><td><code>--name X</code></td><td>Assegna un nome al container</td></tr>
+        <tr><td><code>-p HOST:CONT</code></td><td>Mappa una porta</td></tr>
+        <tr><td><code>-v HOST:CONT</code></td><td>Monta un volume/cartella</td></tr>
+        <tr><td><code>-e VAR=val</code></td><td>Imposta variabile d'ambiente</td></tr>
+        <tr><td><code>--rm</code></td><td>Elimina il container quando esce</td></tr>
+        <tr><td><code>-it</code></td><td>Interattivo + TTY (per shell)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Docker Compose</h3>
+    <table>
+      <tbody>
+        <tr><td><code>docker compose up -d</code></td><td>Avvia tutti i servizi in background</td></tr>
+        <tr><td><code>docker compose down</code></td><td>Ferma ed elimina i container</td></tr>
+        <tr><td><code>docker compose ps</code></td><td>Stato dei servizi</td></tr>
+        <tr><td><code>docker compose logs -f</code></td><td>Log in tempo reale di tutti i servizi</td></tr>
+        <tr><td><code>docker compose restart SERVIZIO</code></td><td>Riavvia un singolo servizio</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Forzare la rigenerazione dei container</h2>
+    <p>Quando modifichi il <code>Dockerfile</code>, il <code>docker-compose.yml</code>, o vuoi partire "pulito" ignorando le cache:</p>
+
+    <h3>Solo ricreare i container (senza rebuild immagine)</h3>
+    <pre><code>docker compose up -d --force-recreate</code></pre>
+    <p class="note">Usa se hai cambiato variabili d'ambiente o parametri del compose ma non il Dockerfile.</p>
+
+    <h3>Rebuild immagine + ricreare i container</h3>
+    <pre><code>docker compose up -d --build --force-recreate</code></pre>
+    <p class="note">Uso più comune quando cambi il <code>Dockerfile</code> o il codice copiato nell'immagine.</p>
+
+    <h3>Rebuild completo senza cache</h3>
+    <pre><code>docker compose build --no-cache && docker compose up -d --force-recreate</code></pre>
+    <p class="note">Rifà ogni layer da zero. Utile se sospetti che la cache contenga versioni vecchie (es. dopo un <code>apt-get</code> che non aggiorna).</p>
+
+    <h3>Teardown totale e partenza pulita</h3>
+    <pre><code>docker compose down -v && docker compose up -d --build</code></pre>
+    <div class="warn">
+      <strong>Attenzione:</strong> il flag <code>-v</code> elimina anche i <em>volumi</em> nominati → <strong>perdi i dati</strong> (database, upload, ecc.). Ometti <code>-v</code> se vuoi conservarli.
+    </div>
+
+    <h3>Equivalente senza compose</h3>
+    <pre><code>docker rm -f NOME && docker build -t NOME . && docker run -d --name NOME NOME</code></pre>
+
+    <h2>Pulizia</h2>
+    <table>
+      <tbody>
+        <tr><td><code>docker system prune</code></td><td>Rimuove container fermi, reti inutilizzate, immagini dangling</td></tr>
+        <tr><td><code>docker system prune -a</code></td><td>Come sopra + immagini non usate da nessun container</td></tr>
+        <tr><td><code>docker volume prune</code></td><td>Elimina volumi non referenziati</td></tr>
+        <tr><td><code>docker image prune -a</code></td><td>Elimina tutte le immagini non usate</td></tr>
+      </tbody>
+    </table>
+  </section>
 
   <footer>Guida personale — aggiornata al 2026</footer>
 </main>
 
 <script>
+  // ── tab switching ──
+  document.querySelectorAll('.tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.tab;
+      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === btn));
+      document.querySelectorAll('.pane').forEach(p => p.classList.toggle('active', p.id === target));
+      history.replaceState(null, '', '#' + target);
+    });
+  });
+  // restore tab from URL hash
+  if (location.hash) {
+    const btn = document.querySelector(`.tab[data-tab="${location.hash.slice(1)}"]`);
+    if (btn) btn.click();
+  }
+
+  // ── commit generator ──
   const msg = document.getElementById('msg');
   const out = document.getElementById('out').querySelector('code');
   const btn = document.getElementById('copy');
