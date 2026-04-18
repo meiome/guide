@@ -3,7 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guida comandi — meiome</title>
+
+<title>Guida git e docker con generatore commit — cheatsheet in italiano</title>
+<meta name="description" content="Cheatsheet interattivo dei comandi git e docker più usati, in italiano. Include un generatore di commit copiabile, spiegazione delle differenze tra git add -u, . e -A, e comandi per forzare la rigenerazione dei container Docker.">
+<meta name="author" content="meiome">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://meiome.github.io/guide/">
+
+<!-- Open Graph (Facebook, LinkedIn, anteprime in chat) -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="Guida git e docker con generatore commit">
+<meta property="og:description" content="Cheatsheet interattivo dei comandi git e docker più usati, in italiano. Con generatore di commit copiabile.">
+<meta property="og:url" content="https://meiome.github.io/guide/">
+<meta property="og:locale" content="it_IT">
+<meta property="og:site_name" content="meiome — guide comandi">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Guida git e docker con generatore commit">
+<meta name="twitter:description" content="Cheatsheet interattivo dei comandi git e docker più usati, in italiano.">
+
+<!-- Structured data: TechArticle -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Guida git e docker con generatore commit",
+  "description": "Cheatsheet interattivo dei comandi git e docker più usati, in italiano. Include un generatore di commit copiabile, spiegazione delle differenze tra git add -u, . e -A, e comandi per forzare la rigenerazione dei container Docker.",
+  "author": { "@type": "Person", "name": "meiome", "url": "https://github.com/meiome" },
+  "publisher": { "@type": "Person", "name": "meiome" },
+  "inLanguage": "it-IT",
+  "datePublished": "2026-04-18",
+  "dateModified": "2026-04-18",
+  "url": "https://meiome.github.io/guide/",
+  "keywords": "git, docker, guida, cheatsheet, italiano, generatore commit, git add, docker compose, force-recreate"
+}
+</script>
 <style>
   :root {
     --bg: #0f1115;
@@ -264,6 +299,7 @@ git push -u origin main</code></pre>
 git checkout main           # torna al main
 git branch -d feature_x     # elimina il branch locale
 git push origin feature_x   # rende il branch visibile sul remoto</code></pre>
+    <p class="note">Dalla versione 2.23 esistono anche <code>git switch main</code> e <code>git switch -c feature_x</code>: più chiari e senza gli effetti collaterali di <code>checkout</code>.</p>
 
     <h2>Aggiornare &amp; unire</h2>
     <p>Per sincronizzare la directory di lavoro con il remoto:</p>
@@ -295,7 +331,9 @@ git tag 1.0.0 1b2e1d63ff</code></pre>
 
     <h2>Annullare modifiche locali</h2>
     <p>Scartare le modifiche a un file non ancora committato:</p>
-    <pre><code>git checkout -- nomedelfile</code></pre>
+    <pre><code>git checkout -- nomedelfile
+# oppure, dalla versione 2.23 (più chiaro):
+git restore nomedelfile</code></pre>
     <p>Buttare via tutto quello che hai in locale e tornare allo stato del remoto:</p>
     <pre><code>git fetch origin
 git reset --hard origin/main</code></pre>
@@ -342,7 +380,8 @@ gitk                              # interfaccia grafica integrata</code></pre>
     </table>
 
     <h3>Run con flag più usate</h3>
-    <pre><code>docker run -d --name webapp -p 8080:80 -v $(pwd):/app nginx</code></pre>
+    <pre><code>docker run -d --name webapp -p 8080:80 -v $(pwd):/usr/share/nginx/html nginx</code></pre>
+    <p class="note">Esempio reale: avvia nginx in background, espone sulla porta 8080 e serve i file della cartella corrente.</p>
     <table>
       <tbody>
         <tr><td><code>-d</code></td><td>Detached (in background)</td></tr>
