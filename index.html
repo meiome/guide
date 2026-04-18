@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guida comandi — meiome</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --panel: #161a22;
+    --border: #242a35;
+    --text: #e6e8eb;
+    --muted: #9aa3af;
+    --accent: #7cc4ff;
+    --ok: #5ed4a0;
+    --code-bg: #0b0d12;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #fafafa;
+      --panel: #ffffff;
+      --border: #e4e6ea;
+      --text: #1b1f24;
+      --muted: #5b6470;
+      --accent: #0969da;
+      --ok: #1a7f4f;
+      --code-bg: #f3f4f6;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  main {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 4rem;
+  }
+  h1 { margin: 0 0 .25rem; font-size: 2rem; }
+  h2 { margin-top: 2.5rem; font-size: 1.35rem; border-bottom: 1px solid var(--border); padding-bottom: .35rem; }
+  .sub { color: var(--muted); margin-top: 0; }
+  code, pre, kbd {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: .92em;
+  }
+  code { background: var(--code-bg); padding: .1em .35em; border-radius: 4px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  th, td {
+    padding: .7rem .9rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th { background: var(--code-bg); font-weight: 600; }
+  tr:last-child td { border-bottom: none; }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-top: 1rem;
+  }
+  label { display: block; font-weight: 600; margin-bottom: .4rem; }
+  textarea {
+    width: 100%;
+    min-height: 70px;
+    padding: .65rem .8rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--code-bg);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+  }
+  textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .output {
+    margin-top: 1rem;
+    display: flex;
+    gap: .5rem;
+    align-items: stretch;
+  }
+  .output pre {
+    flex: 1;
+    margin: 0;
+    padding: .75rem .9rem;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  button {
+    padding: .55rem 1rem;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: .95rem;
+    white-space: nowrap;
+  }
+  button:hover { filter: brightness(1.1); }
+  button.copied { background: var(--ok); }
+  .note { color: var(--muted); font-size: .88rem; margin-top: .6rem; }
+  footer { margin-top: 3rem; text-align: center; color: var(--muted); font-size: .85rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Guida comandi</h1>
+  <p class="sub">Appunti personali — <a href="https://github.com/meiome" style="color:var(--accent)">@meiome</a></p>
+
+  <h2><code>git add</code> — differenze tra <code>-u</code>, <code>.</code> e <code>-A</code></h2>
+  <p>I tre flag sembrano equivalenti ma si comportano in modo diverso rispetto a <em>file modificati</em>, <em>nuovi</em> ed <em>eliminati</em>, e rispetto alla <em>cartella corrente</em>.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Comando</th>
+        <th>File modificati</th>
+        <th>File nuovi</th>
+        <th>File eliminati</th>
+        <th>Ambito</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>git add -u</code></td>
+        <td>Sì</td>
+        <td>No</td>
+        <td>Sì</td>
+        <td>Tutto il repo</td>
+      </tr>
+      <tr>
+        <td><code>git add .</code></td>
+        <td>Sì</td>
+        <td>Sì</td>
+        <td>Sì <span class="note">(da Git 2.0)</span></td>
+        <td>Solo dalla cartella corrente in giù</td>
+      </tr>
+      <tr>
+        <td><code>git add -A</code></td>
+        <td>Sì</td>
+        <td>Sì</td>
+        <td>Sì</td>
+        <td>Tutto il repo</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>In pratica:</strong></p>
+  <ul>
+    <li><code>-u</code> (update): aggiorna solo i file già tracciati. Utile quando non vuoi aggiungere file nuovi.</li>
+    <li><code>.</code>: include tutto <em>a partire dalla cartella in cui ti trovi</em>. Se sei in una sottocartella, file modificati altrove restano fuori.</li>
+    <li><code>-A</code> (all): include tutto il repo. È l'opzione più "totale".</li>
+  </ul>
+
+  <h2>Generatore commit</h2>
+  <div class="card">
+    <label for="msg">Messaggio del commit</label>
+    <textarea id="msg" placeholder="es. fix: corretto calcolo totale carrello"></textarea>
+
+    <div class="output">
+      <pre id="out"><code>git add -A &amp;&amp; git commit -m ""</code></pre>
+      <button id="copy" type="button">Copia</button>
+    </div>
+    <p class="note">I caratteri <code>"</code>, <code>`</code>, <code>$</code>, <code>\</code> vengono automaticamente escapati per funzionare in shell.</p>
+  </div>
+
+  <footer>Guida personale — aggiornata al 2026</footer>
+</main>
+
+<script>
+  const msg = document.getElementById('msg');
+  const out = document.getElementById('out').querySelector('code');
+  const btn = document.getElementById('copy');
+
+  function escapeForDoubleQuotes(s) {
+    return s.replace(/\\/g, '\\\\')
+            .replace(/`/g, '\\`')
+            .replace(/\$/g, '\\$')
+            .replace(/"/g, '\\"');
+  }
+
+  function render() {
+    const raw = msg.value;
+    const escaped = escapeForDoubleQuotes(raw);
+    out.textContent = `git add -A && git commit -m "${escaped}"`;
+  }
+
+  msg.addEventListener('input', render);
+
+  btn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(out.textContent);
+      const original = btn.textContent;
+      btn.textContent = 'Copiato ✓';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.classList.remove('copied');
+      }, 1500);
+    } catch (e) {
+      alert('Copia non riuscita. Seleziona il testo manualmente.');
+    }
+  });
+
+  render();
+</script>
+</body>
+</html>
