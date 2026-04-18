@@ -42,10 +42,10 @@
     margin: 0 auto;
     padding: 2.5rem 1.25rem 4rem;
   }
-  h1 { margin: 0 0 .25rem; font-size: 2rem; }
+  h1 { margin: 0 0 .35rem; font-size: 2.1rem; letter-spacing: -0.01em; }
   h2 { margin-top: 2.5rem; font-size: 1.35rem; border-bottom: 1px solid var(--border); padding-bottom: .35rem; }
-  h3 { margin-top: 1.75rem; font-size: 1.1rem; }
-  .sub { color: var(--muted); margin-top: 0; }
+  h3 { margin-top: 1.75rem; font-size: 1.05rem; }
+  .sub { color: var(--muted); margin: 0 0 1.75rem; font-size: 1rem; }
   code, pre, kbd {
     font-family: "SF Mono", Menlo, Consolas, monospace;
     font-size: .92em;
@@ -69,13 +69,14 @@
     overflow: hidden;
   }
   th, td {
-    padding: .7rem .9rem;
+    padding: .65rem .9rem;
     text-align: left;
     border-bottom: 1px solid var(--border);
     vertical-align: top;
   }
   th { background: var(--code-bg); font-weight: 600; }
   tr:last-child td { border-bottom: none; }
+  td:first-child { white-space: nowrap; }
   .card {
     background: var(--panel);
     border: 1px solid var(--border);
@@ -83,31 +84,49 @@
     padding: 1.25rem;
     margin-top: 1rem;
   }
+
+  /* ── Guide selector (tabs) ── */
+  .guide-picker {
+    margin: 0 0 2rem;
+  }
+  .guide-picker-label {
+    display: block;
+    color: var(--muted);
+    font-size: .8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin-bottom: .5rem;
+  }
   .tabs {
-    display: flex;
+    display: inline-flex;
     gap: .25rem;
-    border-bottom: 1px solid var(--border);
-    margin: 1.5rem 0 0;
+    padding: .3rem;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
   }
   .tab {
     background: transparent;
     color: var(--muted);
     border: none;
-    padding: .65rem 1.1rem;
+    padding: .6rem 1.25rem;
+    border-radius: 7px;
     font-weight: 600;
-    font-size: .95rem;
+    font-size: .98rem;
     cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
     font-family: inherit;
+    transition: background .15s, color .15s;
   }
   .tab:hover { color: var(--text); }
   .tab.active {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
   }
   .pane { display: none; }
   .pane.active { display: block; }
+
+  /* ── Forms / generator ── */
   label { display: block; font-weight: 600; margin-bottom: .4rem; }
   textarea {
     width: 100%;
@@ -163,55 +182,20 @@
 <body>
 <main>
   <h1>Guida comandi</h1>
-  <p class="sub">Appunti personali — <a href="https://github.com/meiome" style="color:var(--accent)">@meiome</a></p>
+  <p class="sub">Raccolta personale di cheatsheet — <a href="https://github.com/meiome" style="color:var(--accent)">@meiome</a></p>
 
-  <nav class="tabs" role="tablist">
-    <button class="tab active" data-tab="git" role="tab">git</button>
-    <button class="tab" data-tab="docker" role="tab">docker</button>
-  </nav>
+  <div class="guide-picker">
+    <span class="guide-picker-label">Scegli guida</span>
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-tab="git" role="tab">git</button>
+      <button class="tab" data-tab="docker" role="tab">docker</button>
+    </nav>
+  </div>
 
   <!-- ───────── GIT ───────── -->
   <section id="git" class="pane active">
-    <h2><code>git add</code> — differenze tra <code>-u</code>, <code>.</code> e <code>-A</code></h2>
-    <p>I tre flag sembrano equivalenti ma si comportano in modo diverso rispetto a <em>file modificati</em>, <em>nuovi</em> ed <em>eliminati</em>, e rispetto alla <em>cartella corrente</em>.</p>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Comando</th>
-          <th>File modificati</th>
-          <th>File nuovi</th>
-          <th>File eliminati</th>
-          <th>Ambito</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><code>git add -u</code></td>
-          <td>Sì</td><td>No</td><td>Sì</td>
-          <td>Tutto il repo</td>
-        </tr>
-        <tr>
-          <td><code>git add .</code></td>
-          <td>Sì</td><td>Sì</td><td>Sì <span class="note">(da Git 2.0)</span></td>
-          <td>Solo dalla cartella corrente in giù</td>
-        </tr>
-        <tr>
-          <td><code>git add -A</code></td>
-          <td>Sì</td><td>Sì</td><td>Sì</td>
-          <td>Tutto il repo</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <p><strong>In pratica:</strong></p>
-    <ul>
-      <li><code>-u</code> (update): aggiorna solo i file già tracciati. Utile quando non vuoi aggiungere file nuovi.</li>
-      <li><code>.</code>: include tutto <em>a partire dalla cartella in cui ti trovi</em>. Se sei in una sottocartella, file modificati altrove restano fuori.</li>
-      <li><code>-A</code> (all): include tutto il repo. È l'opzione più "totale".</li>
-    </ul>
-
     <h2>Generatore commit</h2>
+    <p>Scrivi il messaggio, copia il comando completo: aggiunge tutti i cambiamenti e fa il commit in un colpo solo.</p>
     <div class="card">
       <label for="msg">Messaggio del commit</label>
       <textarea id="msg" placeholder="es. fix: corretto calcolo totale carrello"></textarea>
@@ -222,6 +206,95 @@
       </div>
       <p class="note">I caratteri <code>"</code>, <code>`</code>, <code>$</code>, <code>\</code> vengono automaticamente escapati per funzionare in shell.</p>
     </div>
+
+    <h2>Creare o clonare un repository</h2>
+    <p>Per creare un nuovo repository locale nella cartella corrente:</p>
+    <pre><code>git init</code></pre>
+    <p>Per clonarne uno esistente:</p>
+    <pre><code># da un server remoto (HTTPS/SSH)
+git clone https://github.com/utente/repo.git
+
+# da una cartella locale
+git clone /percorso/del/repository</code></pre>
+
+    <h2>I tre "alberi" di git</h2>
+    <p>Il repository locale è composto da tre aree:</p>
+    <ul>
+      <li><strong>Directory di lavoro</strong> — i file come li vedi nella cartella.</li>
+      <li><strong>Index (staging)</strong> — l'area dove "prepari" ciò che andrà nel prossimo commit.</li>
+      <li><strong>HEAD</strong> — il riferimento all'ultimo commit fatto.</li>
+    </ul>
+    <p>Il flusso base è: <em>modifichi → <code>git add</code> (sposta nell'index) → <code>git commit</code> (sposta in HEAD) → <code>git push</code> (sincronizza col remoto)</em>.</p>
+
+    <h2>Aggiungere &amp; fare commit</h2>
+    <pre><code>git add nomedelfile       # un file specifico
+git add .                 # tutto dalla cartella corrente in giù
+git add -A                # tutto il repo (più comune)
+git commit -m "messaggio"</code></pre>
+
+    <h3>Differenze tra <code>-u</code>, <code>.</code> e <code>-A</code></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Comando</th>
+          <th>Modificati</th>
+          <th>Nuovi</th>
+          <th>Eliminati</th>
+          <th>Ambito</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git add -u</code></td><td>Sì</td><td>No</td><td>Sì</td><td>Tutto il repo</td></tr>
+        <tr><td><code>git add .</code></td><td>Sì</td><td>Sì</td><td>Sì</td><td>Dalla cartella corrente in giù</td></tr>
+        <tr><td><code>git add -A</code></td><td>Sì</td><td>Sì</td><td>Sì</td><td>Tutto il repo</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Push verso il remoto</h2>
+    <p>Invia i commit locali al server:</p>
+    <pre><code>git push origin main</code></pre>
+    <p>Se il repository locale non è ancora collegato a un remoto:</p>
+    <pre><code>git remote add origin https://github.com/utente/repo.git
+git push -u origin main</code></pre>
+    <p class="note">Il flag <code>-u</code> imposta il <em>tracking</em>: dopo la prima volta basta <code>git push</code>.</p>
+
+    <h2>Branch</h2>
+    <p>I branch servono a sviluppare feature isolate senza toccare <code>main</code>.</p>
+    <pre><code>git checkout -b feature_x   # crea e passa al nuovo branch
+git checkout main           # torna al main
+git branch -d feature_x     # elimina il branch locale
+git push origin feature_x   # rende il branch visibile sul remoto</code></pre>
+
+    <h2>Aggiornare &amp; unire</h2>
+    <p>Per sincronizzare la directory di lavoro con il remoto:</p>
+    <pre><code>git pull</code></pre>
+    <p>Per unire un altro branch nel tuo branch attuale:</p>
+    <pre><code>git merge altro_branch</code></pre>
+    <p>Per vedere le differenze prima di fare merge:</p>
+    <pre><code>git diff branch_sorgente branch_target</code></pre>
+    <p class="note">In caso di conflitti, git segnala i file: apri, risolvi, poi <code>git add</code> + <code>git commit</code>.</p>
+
+    <h2>Tag</h2>
+    <p>I tag marcano versioni/rilasci. Servono 7+ caratteri dell'hash del commit:</p>
+    <pre><code>git log                   # trova l'hash del commit
+git tag 1.0.0 1b2e1d63ff</code></pre>
+
+    <h2>Annullare modifiche locali</h2>
+    <p>Scartare le modifiche a un file non ancora committato:</p>
+    <pre><code>git checkout -- nomedelfile</code></pre>
+    <p>Buttare via tutto quello che hai in locale e tornare allo stato del remoto:</p>
+    <pre><code>git fetch origin
+git reset --hard origin/main</code></pre>
+    <div class="warn">
+      <strong>Attenzione:</strong> <code>reset --hard</code> è <em>irreversibile</em>: perdi tutte le modifiche locali non pushate.
+    </div>
+
+    <h2>Comandi utili</h2>
+    <pre><code>git status                        # stato della working directory
+git log --oneline --graph --all   # cronologia visuale
+git config --global color.ui true # output colorato
+git config --global format.pretty oneline
+gitk                              # interfaccia grafica integrata</code></pre>
   </section>
 
   <!-- ───────── DOCKER ───────── -->
@@ -327,7 +400,6 @@
       history.replaceState(null, '', '#' + target);
     });
   });
-  // restore tab from URL hash
   if (location.hash) {
     const btn = document.querySelector(`.tab[data-tab="${location.hash.slice(1)}"]`);
     if (btn) btn.click();
