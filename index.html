@@ -268,6 +268,20 @@ git push origin feature_x   # rende il branch visibile sul remoto</code></pre>
     <h2>Aggiornare &amp; unire</h2>
     <p>Per sincronizzare la directory di lavoro con il remoto:</p>
     <pre><code>git pull</code></pre>
+
+    <h3>Pull sicuro (senza merge inattesi)</h3>
+    <p>Un <code>git pull</code> "normale" può generare automaticamente un <em>merge commit</em> se il branch locale e quello remoto sono divergenti. Spesso non è quello che vuoi. Il flag <code>--ff-only</code> (<em>fast-forward only</em>) dice a git: <strong>aggiorna solo se puoi farlo spostando in avanti il puntatore, senza creare commit di merge</strong>. Se non è possibile, git si ferma e ti avvisa.</p>
+    <pre><code>git pull --ff-only</code></pre>
+
+    <h3>Pull su una cartella diversa da quella corrente</h3>
+    <p>Il flag <code>-C &lt;cartella&gt;</code> esegue il comando git <em>come se fossi</em> in quella cartella, senza doverci fare <code>cd</code>. È comodo in script, alias, o quando vuoi aggiornare più repository di fila.</p>
+    <pre><code>git -C /percorso/del/repo pull --ff-only</code></pre>
+    <p>Esempio pratico — aggiornare due progetti in sequenza da qualsiasi posizione:</p>
+    <pre><code>git -C ~/progetti/sito pull --ff-only
+git -C ~/progetti/api pull --ff-only</code></pre>
+    <p class="note">Se il pull non può essere fast-forward (hai commit locali divergenti), il comando esce con errore e il repo resta invariato — così non ti ritrovi con merge automatici indesiderati.</p>
+
+    <h3>Merge &amp; diff</h3>
     <p>Per unire un altro branch nel tuo branch attuale:</p>
     <pre><code>git merge altro_branch</code></pre>
     <p>Per vedere le differenze prima di fare merge:</p>
