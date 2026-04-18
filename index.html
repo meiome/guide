@@ -201,10 +201,10 @@
       <textarea id="msg" placeholder="es. fix: corretto calcolo totale carrello"></textarea>
 
       <div class="output">
-        <pre id="out"><code>git add -A &amp;&amp; git commit -m ""</code></pre>
+        <pre id="out"><code>git add -A &amp;&amp; git commit -m ''</code></pre>
         <button id="copy" class="btn" type="button">Copia</button>
       </div>
-      <p class="note">I caratteri <code>"</code>, <code>`</code>, <code>$</code>, <code>\</code> vengono automaticamente escapati per funzionare in shell.</p>
+      <p class="note">Il messaggio viene racchiuso in <em>apici singoli</em>: la shell non interpreta <code>$</code>, <code>`</code>, <code>!</code> né altri metacaratteri. Gli apostrofi dentro al testo vengono gestiti automaticamente.</p>
     </div>
 
     <h2>Creare o clonare un repository</h2>
@@ -424,17 +424,17 @@ gitk                              # interfaccia grafica integrata</code></pre>
   const out = document.getElementById('out').querySelector('code');
   const btn = document.getElementById('copy');
 
-  function escapeForDoubleQuotes(s) {
-    return s.replace(/\\/g, '\\\\')
-            .replace(/`/g, '\\`')
-            .replace(/\$/g, '\\$')
-            .replace(/"/g, '\\"');
+  // Racchiude il messaggio in apici singoli. L'unico carattere problematico
+  // è l'apice singolo stesso: si "chiude" la stringa, si inserisce \' letterale,
+  // e si riapre. Quindi ogni ' diventa '\''.
+  function escapeForSingleQuotes(s) {
+    return "'" + s.replace(/'/g, "'\\''") + "'";
   }
 
   function render() {
     const raw = msg.value;
-    const escaped = escapeForDoubleQuotes(raw);
-    out.textContent = `git add -A && git commit -m "${escaped}"`;
+    const quoted = escapeForSingleQuotes(raw);
+    out.textContent = `git add -A && git commit -m ${quoted}`;
   }
 
   msg.addEventListener('input', render);
